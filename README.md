@@ -1,2 +1,2 @@
 # passman (Project name TBA)
-Manage account passwords without storing them by deterministically generating strong passwords from strings.
+Account password generator and manager for Android. Manages passwords without storing them by deterministically generating strong passwords from strings.
