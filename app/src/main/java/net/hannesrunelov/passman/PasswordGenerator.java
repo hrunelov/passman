@@ -2,7 +2,6 @@ package net.hannesrunelov.passman;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Class that deterministically generates a password from a string.
