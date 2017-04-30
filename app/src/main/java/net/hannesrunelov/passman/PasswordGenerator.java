@@ -1,12 +1,8 @@
 package net.hannesrunelov.passman;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Random;
 
 /**
  * Class that deterministically generates a password from a string.
@@ -14,21 +10,12 @@ import javax.crypto.spec.SecretKeySpec;
 public class PasswordGenerator {
 
 	private static final char[] UPPERCASE_CHARS = { 'A','B','C','D','E','F','G','H','I','J','K','L','M',
-			'N','O','P','Q','R','S','T','U','V','W','X','Y','Z' };
+													'N','O','P','Q','R','S','T','U','V','W','X','Y','Z' };
 	private static final char[] LOWERCASE_CHARS = { 'a','b','c','d','e','f','g','h','i','j','k','l','m',
-			'n','o','p','q','r','s','t','u','v','w','x','y','z' };
+													'n','o','p','q','r','s','t','u','v','w','x','y','z' };
 	private static final char[] NUMBER_CHARS    = { '1','2','3','4','5','6','7','8','9','0' };
 	private static final char[] SYMBOL_CHARS    = { '@','%','+','\\','/','\'','!','#','$','?',
-			':','.','(',')' ,'{','}' ,'[',']','-','_' };
-
-	private static final byte[] BASE = { -27,-60,58,41,112,-126,64,-97,
-										 -38,62,-11,99,-2,-79,44,-77,
-										 16,121,-55,-73,-68,88,-32,-95,
-										 94,111,49,40,70,17,111,12,
-										 -12,-107,-44,18,-101,-91,16,24,
-										 -37,20,-67,37,-81,-86,110,19,
-										 127,-125,4,104,-47,-104,-83,-89,
-										 -96,-62,-119,95,102,22,-111,-109 };
+													':','.','(',')' ,'{','}' ,'[',']','-','_' };
 
 	public static final byte UPPERCASE = 0b0001;
 	public static final byte LOWERCASE = 0b0010;
@@ -50,54 +37,37 @@ public class PasswordGenerator {
 			include = 0b1111;
 		}
 
-		int minLength = 1;
-		int maxLength = BASE.length;
-
 		String e = null;
-		if (key.length()<minLength || key.length()>maxLength) {
-			e = String.format(Locale.getDefault(),
-					"Key length out of range (%d, expected between %d and %d)",
-					key.length(), minLength, maxLength);
+		if (key.length()<1) {
+			e = "Empty key";
 		}
-		if (length<minLength || length>maxLength) {
-			e = String.format(Locale.getDefault(),
-					"Password length out of range (%d, expected between %d and %d)",
-					length, minLength, maxLength);
+		if (length<1) {
+			e = "Non-positive password length";
 		}
 		if (e != null) {
 			throw new IllegalArgumentException(e);
 		}
 
-		List<Character> chars = new ArrayList<>();
+		List<char[]> chars = new ArrayList<>();
 
 		if ((include & UPPERCASE) == UPPERCASE) {
-			for (char c : UPPERCASE_CHARS) {
-				chars.add(c);
-			}
+			chars.add(UPPERCASE_CHARS);
 		}
 		if ((include & LOWERCASE) == LOWERCASE) {
-			for (char c : LOWERCASE_CHARS) {
-				chars.add(c);
-			}
+			chars.add(LOWERCASE_CHARS);
 		}
 		if ((include & NUMBERS) == NUMBERS) {
-			for (char c : NUMBER_CHARS) {
-				chars.add(c);
-			}
+			chars.add(NUMBER_CHARS);
 		}
 		if ((include & SYMBOLS) == SYMBOLS) {
-			for (char c : SYMBOL_CHARS) {
-				chars.add(c);
-			}
+			chars.add(SYMBOL_CHARS);
 		}
 
+		Random rnd = new Random(key.hashCode());
 		StringBuilder sb = new StringBuilder();
-		char c = 0;
 		for (int i = 0; i < length; ++i) {
-			if (i < key.length()) {
-				c = key.charAt(i);
-			}
-			sb.append(chars.get((Math.abs(c+(i+1)*hash(key)*key.length()+BASE[i]) % 2147483647) % chars.size()));
+			char[] charArr = chars.get(Math.abs(rnd.nextInt())%chars.size());
+			sb.append(charArr[Math.abs(rnd.nextInt())%charArr.length]);
 		}
 		return sb.toString();
 	}
@@ -119,15 +89,5 @@ public class PasswordGenerator {
 	 */
 	public static String getPassword(String key) {
 		return getPassword(key, 20);
-	}
-
-	private static int hash(String str) {
-		int h = 0;
-		if (str.length() > 0) {
-			for (int i = 0; i < str.length(); ++i) {
-				h = 31 * h + str.charAt(i);
-			}
-		}
-		return h;
 	}
 }

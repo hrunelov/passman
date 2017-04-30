@@ -10,36 +10,19 @@ import static org.junit.Assert.*;
 public class PasswordGeneratorTest {
 
     @Test
-    public void testRanges() throws Exception {
+    public void testArgs() throws Exception {
         try {
-            PasswordGenerator.getPassword("",24);
+            PasswordGenerator.getPassword("", 24);
             fail();
         } catch (IllegalArgumentException e) {}
         try {
-            PasswordGenerator.getPassword("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",24);
+            PasswordGenerator.getPassword("a", 0);
             fail();
         } catch (IllegalArgumentException e) {}
         try {
-            PasswordGenerator.getPassword("asdf",0);
+            PasswordGenerator.getPassword("a", -1);
             fail();
         } catch (IllegalArgumentException e) {}
-        try {
-            PasswordGenerator.getPassword("asdf",-1);
-            fail();
-        } catch (IllegalArgumentException e) {}
-        try {
-            PasswordGenerator.getPassword("asdf",65);
-            fail();
-        } catch (IllegalArgumentException e) {}
-
-        try {
-            PasswordGenerator.getPassword("a",24);
-            PasswordGenerator.getPassword("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",24);
-            PasswordGenerator.getPassword("asdf",1);
-            PasswordGenerator.getPassword("asdf",64);
-        } catch (IllegalArgumentException e) {
-            fail(e.getStackTrace().toString());
-        }
     }
 
     @Test
@@ -63,121 +46,121 @@ public class PasswordGeneratorTest {
 
                 // Uppercase
                 case 0b0001:
-                    expected1 = "LXEGSHIWWLJIEYKMUONOMFI";
-                    expected2 = "ATATUYORGKXLWFGXUDRHUCURGFDCOVTGQHASLDOEDQ";
-                    expected3 = "RDJQKKXTFXYNKWCOMLMMLIGHFZTTNCMSMAPFDXRGVKJCDJEYCPEXKMLMESPEEJZA";
+                    expected1 = "WUDAGQXBJXTBJCVRRBFIUVC";
+                    expected2 = "TKFWZPZVWGZCPXZJLYGJWTUPSOGQWORIIOXEHZIIWI";
+                    expected3 = "REGESMVGCEWYOGHQVWHTQHYJPNWWKZOYLIEQSMLABEJIRGEONEHCGTSRANJCNGPR";
                     regex = "^[A-Z]+$";
                     break;
 
                 // Lowercase
                 case 0b0010:
-                    expected1 = "lxegshiwwljieykmuonomfi";
-                    expected2 = "atatuyorgkxlwfgxudrhucurgfdcovtgqhasldoedq";
-                    expected3 = "rdjqkkxtfxynkwcomlmmlighfzttncmsmapfdxrgvkjcdjeycpexkmlmespeejza";
+                    expected1 = "wudagqxbjxtbjcvrrbfiuvc";
+                    expected2 = "tkfwzpzvwgzcpxzjlygjwtupsogqworiioxehziiwi";
+                    expected3 = "regesmvgcewyoghqvwhtqhyjpnwwkzoylieqsmlabejirgeonehcgtsranjcngpr";
                     regex = "^[a-z]+$";
                     break;
 
                 // Letters
                 case 0b0011:
-                    expected1 = "LXeGShIwwlJIEYkMuoNomfI";
-                    expected2 = "aTaTuYORgkXlwfGxuDrhuCurgFDCovtGqHaslDOedq";
-                    expected3 = "rDjQKKxtfXyNKwcOmLmMLIgHfzTtncMSMaPFDxrgVkJCDJEYcPeXkMLMESpEEjZa";
+                    expected1 = "WUDagqXBjXTbJCVRrBFiuVC";
+                    expected2 = "TkfWZPzVwGzCPxZJlYGjWtUPsogqWOrIIOxEhzIiWI";
+                    expected3 = "regESmVgCewyoGhQvwhtQhYjPnwwKzoYlIeqsmlAbEjiRGEONEhCGtSRANjCNgpr";
                     regex = "^[A-Za-z]+$";
                     break;
 
                 // Numbers
                 case 0b0100:
-                    expected1 = "82775417304177733565707";
-                    expected2 = "787853949584987212201392704170079097403725";
-                    expected3 = "8469194002989793109729564208071939600845672344173210154951859005";
+                    expected1 = "97291704224643844827727";
+                    expected2 = "058148665501828829121276191733893747621517";
+                    expected3 = "0317938113171581274452128075745387931701654987796703565676094568";
                     regex = "^[0-9]+$";
                     break;
 
                 // Uppercase + Numbers
                 case 0b0101:
-                    expected1 = "XPOWKNMU7NB3YIMY9UNUOP3";
-                    expected2 = "9TO09MWF3UTV3XCZKHL49K9HQ8H93L8GS6WMBLKS4O";
-                    expected3 = "6TPIGG8ZHPGRO3Y55PKITAAXPT6F6M79AKTF6Z0MZQBOH4EY7TCTIYXMYGRE3PJO";
+                    expected1 = "WUD917XB2XT6JCVR4BF77VC";
+                    expected2 = "T58WZP6V5G0CP2ZJ2YG2W2UP1917WO8IIO4E62I5WI";
+                    expected3 = "031ES3V1C3171G8Q2744Q2Y2P075K45Y8I93170A6E49RGEONE0CG6SRAN0CN568";
                     regex = "^[A-Z0-9]+$";
                     break;
 
                 // Lowercase + Numbers
                 case 0b0110:
-                    expected1 = "xpowknmu7nb3yimy9unuop3";
-                    expected2 = "9to09mwf3utv3xczkhl49k9hq8h93l8gs6wmblks4o";
-                    expected3 = "6tpigg8zhpgro3y55pkitaaxpt6f6m79aktf6z0mzqboh4ey7tctiyxmygre3pjo";
+                    expected1 = "wud917xb2xt6jcvr4bf77vc";
+                    expected2 = "t58wzp6v5g0cp2zj2yg2w2up1917wo8iio4e62i5wi";
+                    expected3 = "031es3v1c3171g8q2744q2y2p075k45y8i93170a6e49rgeone0cg6sran0cn568";
                     regex = "^[a-z0-9]+$";
                     break;
 
                 // Letters + Numbers
                 case 0b0111:
-                    expected1 = "rtMeM6igCNl73MuWaqZqUZC";
-                    expected2 = "sDSnWGutQc2NKfErwDxFu1eDqhHimVbampQ1fPiQ2W";
-                    expected3 = "ft63Mar0HZGromyKeP1cnAeRpTpVpgw3o7XjrnDIDeNkffkCcB1pK7PEgy03ErbW";
+                    expected1 = "WUDaGQ04J24bJ38r4bF7u27";
+                    expected2 = "0K8w48zvwgzCpxzj2ygJ1TU6S9gqW3RIio47HzIiwI";
+                    expected3 = "03G7S3V1CewyOgh1VWH45212P075KZoy879q170A6eJI8ge9NehC5t56a60CngpR";
                     regex = "^[A-Za-z0-9]+$";
                     break;
 
                 // Symbols
                 case 0b1000:
-                    expected1 = "#.!!{)@[(?)@[[[(+/'/!_[";
-                    expected2 = "!#!#{(-)$/#)$#!%:..?:+-.[?\\:[_?!-_-[)_+!%{";
-                    expected3 = "#\\}$:-)?_.-]-[$+:_-[.$/}\\._]_[@-(-}?_]\\/'[%+\\)@[(.:_@/\\$/:]/$_?{";
+                    expected1 = "$!.-:[_\\.%)})(]\\\\#.[!.[";
+                    expected2 = "?/#@\\#''//?:]%]#.-@.:%!}@$@[+(#-(!\\[}.@{@!";
+                    expected3 = "_+@[$+#@:(:!:{]@.[\\\\/%:.]_!{[)/(#[-(:[_:}/\\-#!!$}[?+/}{}[}?$)/}#";
                     regex = "^[@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Uppercase
                 case 0b1001:
-                    expected1 = "\\B!UEBM{MZD@W[!IO!_![T[";
-                    expected2 = "@N@N{$[V:AV}$F(LO\\)X/EYJQ?VOA}_{SR:I\\}MWJW";
-                    expected3 = "'.RQ@+])'R(N(C+/!RCY?:E.H_.J_G+:IM_}?)#YL(?+R\\:@UF(J((TI:OZSY'RQ";
+                    expected1 = "WUD-:[XB.XT}JCVR\\BF[!VC";
+                    expected2 = "T/#WZP'V/G?CP%ZJ.YG.W%UP@$@[WO#IIO\\E}.I{WI";
+                    expected3 = "_+@ES+V@C(:!:G]Q.[\\\\Q%Y.P_!{K)/Y#I-(:[_A}E\\-RGEONE?CG}SRAN?CN/}#";
                     regex = "^[A-Z@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Lowercase
                 case 0b1010:
-                    expected1 = "\\b!uebm{mzd@w[!io!_![t[";
-                    expected2 = "@n@n{$[v:av}$f(lo\\)x/eyjq?voa}_{sr:i\\}mwjw";
-                    expected3 = "'.rq@+])'r(n(c+/!rcy?:e.h_.j_g+:im_}?)#yl(?+r\\:@uf(j((ti:ozsy'rq";
+                    expected1 = "wud-:[xb.xt}jcvr\\bf[!vc";
+                    expected2 = "t/#wzp'v/g?cp%zj.yg.w%up@$@[wo#iio\\e}.i{wi";
+                    expected3 = "_+@es+v@c(:!:g]q.[\\\\q%y.p_!{k)/y#i-(:[_a}e\\-rgeone?cg}sran?cn/}#";
                     regex = "^[a-z@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Letters
                 case 0b1011:
-                    expected1 = "XPOWuxw/[xB($IM$iUNUyP(";
-                    expected2 = "-\\O_-wWF(UT'cXCZuHvdiu-H@]H-cv]qS}!wBLu+)y";
-                    expected3 = "fTzIqGhZrzG%y(Y{ePKs\\kA#z\\}FfM[-kK\\FfZ_MZ@BOH)oY[Tm\\s$XM$q%E(ztO";
+                    expected1 = "WUDaGQ_\\J%)bJ(]r\\bF[u.[";
+                    expected2 = "?K#w\\#zvwgzCpxzj.ygJ:TU}S$gqW(RIio\\[HzIiwI";
+                    expected3 = "_+G[S+V@CewyOgh@VWH\\/%:.P_!{KZoy#[-q:[_A}eJI#ge$NehC/t{}a}?CngpR";
                     regex = "^[A-Za-z@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Numbers
                 case 0b1100:
-                    expected1 = "#.[!5\\1[3?\\@7[7+(/}/[0!";
-                    expected2 = "!8[#5+-)-/84-#[2@2%_@(-2!0\\@!_07$?-7\\_(7%/";
-                    expected3 = "8\\'91$4??.$#9!$+10-[2${642?#?7:-+-}_?8){}!23\\)@732:?:{)${1#5-00/";
+                    expected1 = "972-:[04.24}4384\\82[!27";
+                    expected2 = "0/#148'6/5?18%88.91.1%76@$@[33#937\\7}.1{17";
+                    expected3 = "_+@79+8@1(:!:5]1.[\\\\5%1.8_!{7)/3#7-(:[_1}5\\-877967?35}5676?94/}#";
                     regex = "^[0-9@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Numbers + Uppercase
                 case 0b1101:
-                    expected1 = "_H-WW)A(@J8QM73E1E%E{XA";
-                    expected2 = "-X-XW(-?7E2JEXS)O.X?9G+PUV_5$6]{KLC(ZT-:ZK";
-                    expected3 = "_T}Q!G)J#TW4KQ(SO6!@X[ATT\\#%X[[-31.4_ZPUBEB-XB(AE2G_@@_M3K?$72]O";
+                    expected1 = "WUD9GQ_\\J%)6J(]4\\8F[7.[";
+                    expected2 = "?K#1\\#66550C8288.91J:TU}S$17W(RI37\\[H2I51I";
+                    expected3 = "_+G[S+V@C317O58@VWH\\/%:.P_!{KZ53#[-3:[_A}5JI#77$N70C/6{}7}?C456R";
                     regex = "^[A-Z0-9@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Numbers + Lowercase
                 case 0b1110:
-                    expected1 = "_h-ww)a(@j8qm73e1e%e{xa";
-                    expected2 = "-x-xw(-?7e2jexs)o.x?9g+puv_5$6]{klc(zt-:zk";
-                    expected3 = "_t}q!g)j#tw4kq(so6!@x[att\\#%x[[-31.4_zpubeb-xb(ae2g_@@_m3k?$72]o";
+                    expected1 = "wud9gq_\\j%)6j(]4\\8f[7.[";
+                    expected2 = "?k#1\\#66550c8288.91j:tu}s$17w(ri37\\[h2i51i";
+                    expected3 = "_+g[s+v@c317o58@vwh\\/%:.p_!{kz53#[-3:[_a}5ji#77$n70c/6{}7}?c456r";
                     regex = "^[a-z0-9@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
 
                 // Symbols + Numbers + Letters
                 default:
-                    expected1 = "D'kim0Ume%Fws+mOo[_[QXA";
-                    expected2 = "axax{oW%[1RBU%98aFfzMqqR-2d7sd]Sg6{MN0qG\\[";
-                    expected3 = "''BWoAt}#0$J!w+Ka6YgHc@Np}r)t@3E[O%8hZ4(lc?c60qOg8eR@sDcue}MU2j$";
+                    expected1 = "W7D-gq0B.24}43V4\\82[u2C";
+                    expected2 = "0k#W4Pz6wG?C8x88.91.WtUPs$@[3Or93O\\E}z1{W7";
+                    expected3 = "_egES+8@Cew!:5]1.wht5%Y.P_!w7zo3l7-(:[_1}E\\-8G79NEh3G}56AN?94g}r";
                     regex = "^[A-Za-z0-9@%+\\\\\\/'!#$?:.(),{}\\[\\]\\-\\_]+$";
                     break;
             }
