@@ -23,12 +23,12 @@ public class PasswordGenerator {
 
 	/**
 	 * Generates a password from a key.
-	 * @param key Key (length between 1 and 64)
-	 * @param length Password length (between 1 and 64)
-	 * @param include Types of characters to include.<br>0b0001: Uppercase letters<br>
-	 * 												     0b0010: Lowercase letters<br>
-	 * 												     0b0100: Numbers<br>
-	 * 													 0b1000: Symbols<br>
+	 * @param key Key to transform
+	 * @param length Password length
+	 * @param include Types of characters to include.<br>UPPERCASE: Uppercase letters<br>
+	 * 												     LOWERCASE: Lowercase letters<br>
+	 * 												     NUMBERS: Numbers<br>
+	 * 													 SYMBOLS: Symbols<br>
 	 * @return The resulting password
 	 */
 	public static String getPassword(String key, int length, int include) {
@@ -62,19 +62,20 @@ public class PasswordGenerator {
 			chars.add(SYMBOL_CHARS);
 		}
 
-		Random rnd = new Random(key.hashCode());
+		Random rnd = new Random(hash(key));
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < length; ++i) {
-			char[] charArr = chars.get(Math.abs(rnd.nextInt())%chars.size());
-			sb.append(charArr[Math.abs(rnd.nextInt())%charArr.length]);
+			char[] charArr = chars.get(Math.abs(rnd.next())%chars.size());
+			sb.append(charArr[Math.abs(rnd.next())%charArr.length]);
 		}
 		return sb.toString();
 	}
 
 	/**
-	 * Generates a password from a key, containing both uppercase and lowercase letters, numbers and symbols.
-	 * @param key Key (length between 1 and 64)
-	 * @param length Password length (between 1 and 64)
+	 * Generates a password from a key, containing both uppercase and lowercase letters,
+	 * numbers and symbols.
+	 * @param key Key to transform
+	 * @param length Password length
 	 * @return The resulting password
 	 */
 	public static String getPassword(String key, int length) {
@@ -82,11 +83,42 @@ public class PasswordGenerator {
 	}
 
 	/**
-	 * Generates a password of length 20 from a key, containing both uppercase and lowercase letters, numbers and symbols.
-	 * @param key Key (length between 1 and 64)
+	 * Generates a password of length 20 from a key, containing both uppercase and
+	 * lowercase letters, numbers and symbols.
+	 * @param key Key to transform
 	 * @return The resulting password
 	 */
 	public static String getPassword(String key) {
 		return getPassword(key, 20);
+	}
+
+	// String hashcode
+	private static int hash(String str) {
+		int result = 0;
+		int len = str.length();
+		for (int i = 0; i < len; ++i) {
+			result = 31 * result + str.charAt(i);
+		}
+		return result;
+	}
+
+	// Stripped down implementation of java.util.Random with only what's needed for the
+	// password generator.
+	private static class Random {
+		private long seed;
+
+		Random(long seed) {
+			setSeed(seed);
+		}
+
+		void setSeed(long seed) {
+			this.seed = (seed ^ 25214903917L) & ((1L << 48) - 1);
+		}
+
+		int next()
+		{
+			seed = (seed * 25214903917L + 11) & ((1L << 48) - 1);
+			return (int)(seed >>> 16);
+		}
 	}
 }

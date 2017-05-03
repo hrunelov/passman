@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -39,6 +40,8 @@ public class PassList extends AppCompatActivity {
 
         name.addTextChangedListener(listener);
         key.addTextChangedListener(listener);
+
+        WebView wv = new WebView(null);
     }
 
     private void getPassword() {
