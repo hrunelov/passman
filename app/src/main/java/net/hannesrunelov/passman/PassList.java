@@ -40,8 +40,6 @@ public class PassList extends AppCompatActivity {
 
         name.addTextChangedListener(listener);
         key.addTextChangedListener(listener);
-
-        WebView wv = new WebView(null);
     }
 
     private void getPassword() {
