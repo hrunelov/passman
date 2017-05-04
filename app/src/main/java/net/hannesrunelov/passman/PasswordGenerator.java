@@ -21,6 +21,8 @@ public class PasswordGenerator {
 	public static final byte NUMBERS   = 0b0100;
 	public static final byte SYMBOLS   = 0b1000;
 
+	public static final int DEFAULT_LENGTH = 20;
+
 	/**
 	 * Generates a password from a key.
 	 * @param key Key to transform
@@ -75,11 +77,14 @@ public class PasswordGenerator {
 	 * Generates a password from a key, containing both uppercase and lowercase letters,
 	 * numbers and symbols.
 	 * @param key Key to transform
-	 * @param length Password length
+	 * @param include Types of characters to include.<br>UPPERCASE: Uppercase letters<br>
+	 * 												     LOWERCASE: Lowercase letters<br>
+	 * 												     NUMBERS: Numbers<br>
+	 * 													 SYMBOLS: Symbols<br>
 	 * @return The resulting password
 	 */
-	public static String getPassword(String key, int length) {
-		return getPassword(key, length, 0b1111);
+	public static String getPassword(String key, int include) {
+		return getPassword(key, DEFAULT_LENGTH, 0b1111);
 	}
 
 	/**
@@ -89,10 +94,10 @@ public class PasswordGenerator {
 	 * @return The resulting password
 	 */
 	public static String getPassword(String key) {
-		return getPassword(key, 20);
+		return getPassword(key, DEFAULT_LENGTH);
 	}
 
-	// String hashcode
+	// String hash
 	private static int hash(String str) {
 		int result = 0;
 		int len = str.length();
