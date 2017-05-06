@@ -1,0 +1,25 @@
+<net.hannesrunelov.passman.AccountListItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:passman="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/accountListItemView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
+    passman:account="Account"
+    passman:contentPadding="7dp">
+
+    <TextView
+        android:id="@+id/accountLabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.62"
+        android:text="@string/account_default_name"
+
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="20sp" />
+
+</net.hannesrunelov.passman.AccountListItemView>

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Passman</string>
-    <string name="title_activity_main">Main</string>
+    <string name="title_activity_main">Passman</string>
+    <string name="account_default_name">Account</string>
 </resources>

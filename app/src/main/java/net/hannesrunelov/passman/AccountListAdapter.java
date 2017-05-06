@@ -4,39 +4,38 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.ViewHolder> {
-    private AccountInfo[] data;
+    private List<String> accounts;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public AccountInfoView view;
-        public ViewHolder(AccountInfoView view) {
+        public AccountListItemView view;
+        public ViewHolder(AccountListItemView view) {
             super(view);
             this.view = view;
         }
     }
 
-    public AccountListAdapter(AccountInfo[] data) {
-        this.data = data;
+    public AccountListAdapter(List<String> accounts) {
+        this.accounts = accounts;
     }
 
     @Override
     public AccountListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        AccountInfoView view = (AccountInfoView)LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.account_info_view, parent, false);
+        AccountListItemView view = (AccountListItemView)LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.account_list_item_view, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        AccountInfo accountInfo = data[position];
-        holder.view.setAccount(accountInfo.account);
-        holder.view.setLength(accountInfo.length);
-        holder.view.setInclude(accountInfo.include);
+        holder.view.setAccount(accounts.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return data.length;
+        return accounts.size();
     }
 }
