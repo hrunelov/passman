@@ -1,5 +1,0 @@
-<resources>
-    <declare-styleable name="AccountListItemView">
-        <attr name="account" format="string" />
-    </declare-styleable>
-</resources>

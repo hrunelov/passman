@@ -1,5 +1,30 @@
 <resources>
-    <string name="app_name">Passman</string>
-    <string name="title_activity_main">Passman</string>
-    <string name="account_default_name">Account</string>
+    <string name="app_name">SeedPass</string>
+    <string name="title_activity_main">SeedPass</string>
+    <string name="service_default_name">Service</string>
+    <string name="services">Services</string>
+    <string name="title_add">Add Service</string>
+    <string name="title_generate">Generate Password</string>
+    <string name="title_warning">Warning</string>
+    <string name="title_rename">Rename Service</string>
+    <string name="title_export">Export Passwords</string>
+    <string name="msg_warning">Are you sure you want to copy the generated password to the clipboard?\nOther
+                               apps can access and potentially store clipboard data at any time.</string>
+    <string name="hint_name">Name of Service or Website</string>
+    <string name="hint_key">Master Password</string>
+    <string name="button_add">Add</string>
+    <string name="button_copy">Copy</string>
+    <string name="button_show">Show Generated Password</string>
+    <string name="button_rename">Rename</string>
+    <string name="button_export">Export</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="export_success">Passwords exported to</string>
+    <string name="export_fail">Failed exporting passwords.</string>
+    <string name="export_filename">Passwords.txt</string>
+    <string name="password">Password</string>
+    <string name="password_copied">Generated password copied to clipboard.\nThe
+                                   copy will expire in 30 seconds.</string>
+    <string name="password_expired">Password copy expired.</string>
 </resources>
