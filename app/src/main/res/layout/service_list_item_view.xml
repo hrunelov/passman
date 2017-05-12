@@ -1,0 +1,29 @@
+<net.hannesrunelov.seedpass.ServiceListItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:passman="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/accountListItemView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:layout_marginTop="5dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    passman:name="Account"
+    passman:cardBackgroundColor="@color/cardview_light_background"
+    passman:contentPadding="7dp">
+
+    <TextView
+        android:id="@+id/serviceLabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.62"
+
+        android:text="@string/service_default_name"
+        android:textAlignment="center"
+        android:textColor="@color/colorTextDark"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+</net.hannesrunelov.seedpass.ServiceListItemView>
