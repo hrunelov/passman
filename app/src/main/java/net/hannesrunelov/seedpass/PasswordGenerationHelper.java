@@ -28,11 +28,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Set;
+import android.os.Handler;
 
 public class PasswordGenerationHelper {
 
     public static void showGeneratePasswordDialog(final Context context,
-                                                  final String service,
+                                                  final Service service,
                                                   final String key) {
 
         final String[] result = { "" };
@@ -72,7 +73,7 @@ public class PasswordGenerationHelper {
         // Set up dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder .setTitle(R.string.title_generate)
-                .setMessage(service)
+                .setMessage(service.name)
                 .setView(layout)
                 .setNegativeButton(R.string.button_cancel, null)
                 .setPositiveButton(R.string.button_copy, new DialogInterface.OnClickListener() {
@@ -99,6 +100,13 @@ public class PasswordGenerationHelper {
                                         Toast.makeText(context,
                                                 R.string.password_copied,
                                                 Toast.LENGTH_LONG).show();
+
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                MainActivity.getInstance().finish();
+                                            }
+                                        }, 200);
                                     }
                                 });
                         builder2.show();
@@ -110,6 +118,7 @@ public class PasswordGenerationHelper {
 
         // Enable/disable button
         final Button copyButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        copyButton.setEnabled(keyText.length() > 0);
         keyText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -126,11 +135,11 @@ public class PasswordGenerationHelper {
         });
         if (key != null) keyText.setText(key);
     }
-    public static void showGeneratePasswordDialog(final Context context, final String service) {
+    public static void showGeneratePasswordDialog(final Context context, final Service service) {
         showGeneratePasswordDialog(context, service, null);
     }
 
-    public static void showExportPasswordsDialog(final Context context, final Set<String> services) {
+    public static void showExportPasswordsDialog(final Context context, final Set<Service> services) {
 
         // Set up Master Password text box
         final EditText keyText = new EditText(context);
@@ -145,6 +154,7 @@ public class PasswordGenerationHelper {
                 .setPositiveButton(R.string.button_export, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
+                        /*
                         // Save passwords to file
                         try {
                             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
@@ -171,6 +181,7 @@ public class PasswordGenerationHelper {
                                     Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
+                        */
                     }
                 });
         AlertDialog dialog = builder.create();
@@ -194,8 +205,8 @@ public class PasswordGenerationHelper {
         });
     }
 
-    private static String generatePassword(String name, String key) {
+    private static String generatePassword(Service service, String key) {
         if (key.equals("")) return "";
-        return PasswordGenerator.getPassword((name + key).toLowerCase());
+        return PasswordGenerator.getPassword((service.name + key).toLowerCase(), service.include);
     }
 }

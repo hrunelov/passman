@@ -1,45 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="320dp"
+    android:layout_height="340dp"
+    android:minHeight="178dp"
+    android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <view
+        android:id="@+id/topBar"
+        class="android.view.View"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
+        android:layout_height="2dp"
+        android:layout_alignParentTop="true"
+        android:background="?android:attr/colorAccent"
+        android:visibility="visible" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
         tools:context="net.hannesrunelov.seedpass.MainActivity">
 
-        <include layout="@layout/content_main"
-            android:id="@+id/include" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/serviceList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="40dp"
-            android:paddingTop="40dp"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/service_list_item_view" >
-
-        </android.support.v7.widget.RecyclerView>
+        <include
+            android:id="@+id/include"
+            layout="@layout/content_main" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/addButton"
@@ -47,8 +33,20 @@
             android:layout_height="87dp"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="?android:attr/colorPrimary"
+            app:backgroundTint="?android:attr/colorAccent"
             app:srcCompat="@drawable/ic_add_white_24dp" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/serviceList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="42dp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/service_list_item_view">
+
+        </android.support.v7.widget.RecyclerView>
+
     </android.support.design.widget.CoordinatorLayout>
-</LinearLayout>
+
+</RelativeLayout>

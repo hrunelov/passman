@@ -102,7 +102,7 @@ public class PasswordGenerator {
 	 * @return The resulting password
 	 */
 	public static String getPassword(String key, int include) {
-		return getPassword(key, DEFAULT_LENGTH, 0b1111);
+		return getPassword(key, DEFAULT_LENGTH, include);
 	}
 
 	/**

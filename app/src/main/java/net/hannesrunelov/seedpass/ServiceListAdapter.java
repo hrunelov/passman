@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import java.util.Set;
 
 public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.ViewHolder> {
-    private Set<String> services;
+    private Set<Service> services;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ServiceListItemView view;
@@ -18,7 +18,7 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
         }
     }
 
-    public ServiceListAdapter(Set<String> services) {
+    public ServiceListAdapter(Set<Service> services) {
         this.services = services;
     }
 
@@ -27,17 +27,17 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
         final ServiceListItemView view = (ServiceListItemView)LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.service_list_item_view, parent, false);
 
-        view.setNamehangedListener(new ServiceListItemView.NameChangedListener() {
+        view.setServiceChangedListener(new ServiceListItemView.ServiceChangedListener() {
             @Override
-            public void onNameChanged(String oldName, String newName) {
-                int oldPosition = positionOf(oldName);
+            public void onServiceChanged(Service oldService, Service newService) {
+                int oldPosition = positionOf(oldService);
                 int oldSize = services.size();
-                services.remove(oldName);
-                services.add(newName);
+                services.remove(oldService);
+                services.add(newService);
                 if (services.size() < oldSize) {
                     notifyItemRemoved(oldPosition);
                 } else {
-                    int newPosition = positionOf(newName);
+                    int newPosition = positionOf(newService);
                     if (oldPosition != newPosition) notifyItemMoved(oldPosition, newPosition);
                     notifyItemChanged(newPosition);
                 }
@@ -53,7 +53,7 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.view.setName(getServiceArray()[position]);
+        holder.view.setService(getServiceArray()[position]);
     }
 
     @Override
@@ -61,24 +61,24 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
         return services.size();
     }
 
-    private String[] getServiceArray() {
-        String[] result = new String[services.size()];
+    private Service[] getServiceArray() {
+        Service[] result = new Service[services.size()];
         int i = 0;
-        for (String a : services) {
-            result[i++] = a;
+        for (Service s : services) {
+            result[i++] = s;
         }
         return result;
     }
 
-    public int positionOf(String service) {
-        String[] arr = getServiceArray();
+    public int positionOf(Service service) {
+        Service[] arr = getServiceArray();
         for (int i = 0; i < arr.length; ++i) {
             if (arr[i].equals(service)) return i;
         }
         return -1;
     }
 
-    public String serviceAt(int position) {
+    public Service serviceAt(int position) {
         if (position < 0 || position >= services.size()) return null;
         return getServiceArray()[position];
     }
