@@ -105,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 nameText.setHint(R.string.hint_name);
                 nameText.setSingleLine(true);
                 nameText.setFilters(new InputFilter[] {
-                        new InputFilter.LengthFilter(16)
+                        new InputFilter.LengthFilter(getResources().getInteger(
+                                R.integer.max_service_name_length))
                 });
 
                 // Set up Include checkboxes

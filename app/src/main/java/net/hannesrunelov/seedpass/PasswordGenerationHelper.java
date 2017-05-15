@@ -4,31 +4,30 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Set;
 import android.os.Handler;
+import android.widget.ViewSwitcher;
 
 public class PasswordGenerationHelper {
 
@@ -45,11 +44,24 @@ public class PasswordGenerationHelper {
         keyText.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         // Set up password text
-        final TextView resultText = new TextView(context);
-        resultText.setTypeface(Typeface.MONOSPACE);
-        resultText.setTextColor(Color.BLACK);
-        resultText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
-        resultText.setVisibility(View.GONE);
+        final TextSwitcher resultSwitcher = new TextSwitcher(context);
+        resultSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView resultText = new TextView(context);
+                resultText.setTypeface(Typeface.MONOSPACE);
+                resultText.setTextColor(Color.BLACK);
+                resultText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
+                return resultText;
+            }
+        });
+        resultSwitcher.setVisibility(View.GONE);
+        Animation in = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
+        in.setDuration(100);
+        out.setDuration(100);
+        resultSwitcher.setInAnimation(in);
+        resultSwitcher.setOutAnimation(out);
 
         // Set up Show checkbox
         final CheckBox showToggle = new CheckBox(context);
@@ -58,7 +70,7 @@ public class PasswordGenerationHelper {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                resultText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                resultSwitcher.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -67,7 +79,7 @@ public class PasswordGenerationHelper {
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(keyText);
         layout.addView(showToggle);
-        layout.addView(resultText);
+        layout.addView(resultSwitcher);
         keyText.requestFocus();
 
         // Set up dialog
@@ -98,8 +110,15 @@ public class PasswordGenerationHelper {
                                         clipboard.setPrimaryClip(clip);
 
                                         Toast.makeText(context,
-                                                R.string.password_copied,
+                                                String.format(context.getString(R.string.password_copied),
+                                                        context.getResources().getInteger(
+                                                                R.integer.password_expiration_time)),
                                                 Toast.LENGTH_LONG).show();
+
+                                        // Start expiration
+                                        Intent intent = new Intent(context, PasswordExpirationService.class);
+                                        intent.putExtra(context.getString(R.string.password), result[0]);
+                                        context.startService(intent);
 
                                         new Handler().postDelayed(new Runnable() {
                                             @Override
@@ -130,7 +149,7 @@ public class PasswordGenerationHelper {
             public void afterTextChanged(Editable s) {
                 copyButton.setEnabled(keyText.length() > 0);
                 result[0] = generatePassword(service, s.toString());
-                resultText.setText(" " + result[0]);
+                resultSwitcher.setText(" " + result[0]);
             }
         });
         if (key != null) keyText.setText(key);

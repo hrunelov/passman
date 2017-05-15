@@ -12,13 +12,15 @@
         <activity
             android:name="net.hannesrunelov.seedpass.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/DialogTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".PasswordExpirationService"
+            android:exported="false" />
     </application>
 
 </manifest>
