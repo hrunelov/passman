@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pintent = PendingIntent.getActivity(this, 42, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_seedpass_icon);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_seedpass_icon_flat);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder .setContentTitle(getString(R.string.notification))
                 .setContentIntent(pintent)
