@@ -52,6 +52,7 @@ public class PasswordGenerationHelper {
                 resultText.setTypeface(Typeface.MONOSPACE);
                 resultText.setTextColor(Color.BLACK);
                 resultText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
+                resultText.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/UbuntuMono-Regular.ttf"));
                 return resultText;
             }
         });
