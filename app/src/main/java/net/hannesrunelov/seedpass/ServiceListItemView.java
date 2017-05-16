@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -154,9 +155,25 @@ public class ServiceListItemView extends LinearLayout {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        saveButton.setEnabled(s.length() > 0);
+                        saveButton.setEnabled(s.length() > 0 && (uppercaseCheckBox.isChecked() ||
+                                                                 lowercaseCheckBox.isChecked() ||
+                                                                 numberCheckBox.isChecked() ||
+                                                                 symbolCheckBox.isChecked()));
                     }
                 });
+                CheckBox.OnCheckedChangeListener checkListener = new CheckBox.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        saveButton.setEnabled(nameText.length() > 0 && (uppercaseCheckBox.isChecked() ||
+                                                                        lowercaseCheckBox.isChecked() ||
+                                                                        numberCheckBox.isChecked() ||
+                                                                        symbolCheckBox.isChecked()));
+                    }
+                };
+                uppercaseCheckBox.setOnCheckedChangeListener(checkListener);
+                lowercaseCheckBox.setOnCheckedChangeListener(checkListener);
+                numberCheckBox.setOnCheckedChangeListener(checkListener);
+                symbolCheckBox.setOnCheckedChangeListener(checkListener);
                 return true;
             };
         });

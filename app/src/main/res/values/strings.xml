@@ -4,6 +4,8 @@
     <string name="service_default_name">Service</string>
     <string name="services">Services</string>
     <string name="notification">Tap to generate password</string>
+    <string name="help_label">Tap to add a service or website ➜</string>
+    <string name="title_select">Select Service</string>
     <string name="title_add">Add Service</string>
     <string name="title_generate">Generate Password</string>
     <string name="title_warning">Warning</string>

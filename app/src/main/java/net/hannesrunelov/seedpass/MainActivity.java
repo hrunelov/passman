@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -26,9 +28,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import java.util.Set;
 
@@ -42,12 +46,14 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView listView;
     private ServiceListAdapter listAdapter;
     private FloatingActionButton addButton;
+    private TextView helpLabel;
     private Set<Service> services;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(R.string.title_select);
 
         instance = this;
 
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private void initWidgets() {
         listView = (RecyclerView)findViewById(R.id.serviceList);
         addButton = (FloatingActionButton)findViewById(R.id.addButton);
+        helpLabel = (TextView)findViewById(R.id.helpLabel);
 
         // Service List
         listView.setHasFixedSize(true);
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         services = PreferencesHelper.read(this);
         listAdapter = new ServiceListAdapter(services);
         listView.setAdapter(listAdapter);
+        helpLabel.setVisibility(services.size() > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void initDeleteItems() {
@@ -87,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 services.remove(listAdapter.serviceAt(position));
                 listAdapter.notifyItemRemoved(position);
+                helpLabel.setVisibility(services.size() > 0 ? View.INVISIBLE : View.VISIBLE);
 
                 // Save
                 PreferencesHelper.write(MainActivity.this, services);
@@ -155,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (services.size() > oldSize) {
                                     int position = listAdapter.positionOf(service);
                                     listAdapter.notifyItemInserted(position);
+                                    helpLabel.setVisibility(services.size() > 0 ? View.INVISIBLE : View.VISIBLE);
                                 }
 
                                 // Save
@@ -177,9 +187,25 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        addButton.setEnabled(s.length() > 0);
+                        addButton.setEnabled(s.length() > 0 && (uppercaseCheckBox.isChecked() ||
+                                                                lowercaseCheckBox.isChecked() ||
+                                                                numberCheckBox.isChecked() ||
+                                                                symbolCheckBox.isChecked()));
                     }
                 });
+                CheckBox.OnCheckedChangeListener checkListener = new CheckBox.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        addButton.setEnabled(nameText.length() > 0 && (uppercaseCheckBox.isChecked() ||
+                                                                lowercaseCheckBox.isChecked() ||
+                                                                numberCheckBox.isChecked() ||
+                                                                symbolCheckBox.isChecked()));
+                    }
+                };
+                uppercaseCheckBox.setOnCheckedChangeListener(checkListener);
+                lowercaseCheckBox.setOnCheckedChangeListener(checkListener);
+                numberCheckBox.setOnCheckedChangeListener(checkListener);
+                symbolCheckBox.setOnCheckedChangeListener(checkListener);
             }
         });
     }
@@ -188,11 +214,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pintent = PendingIntent.getActivity(this, 42, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_seedpass_icon);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder .setContentTitle(getString(R.string.title_activity_main))
-                .setContentText(getString(R.string.notification))
+        builder .setContentTitle(getString(R.string.notification))
                 .setContentIntent(pintent)
-                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setSmallIcon(R.drawable.ic_seedpass_icon_mono)
+                .setLargeIcon(icon)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setShowWhen(false)
                 .setOngoing(true);
 
         Notification notification = builder.build();
