@@ -2,7 +2,6 @@
 /**
  * JavaScript port of java.util.Random, stripped down to what's needed for the password generator.
  */
-
 function Random(seed) {
 	this.seed = new int(0,64);
 	this.setSeed(seed);

@@ -1,14 +1,20 @@
 package net.hannesrunelov.seedpass;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,28 +22,40 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static Activity getInstance() {
+        return instance;
+    }
+    private static Activity instance;
+
     private RecyclerView listView;
     private ServiceListAdapter listAdapter;
-    private RecyclerView.LayoutManager listLayout;
     private FloatingActionButton addButton;
-    private Set<String> services;
+    private TextView helpLabel;
+    private Set<Service> services;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(R.string.title_select);
+
+        instance = this;
 
         initWidgets();
         initDeleteItems();
@@ -46,21 +64,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initWidgets() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         listView = (RecyclerView)findViewById(R.id.serviceList);
         addButton = (FloatingActionButton)findViewById(R.id.addButton);
-
-        setSupportActionBar(toolbar);
+        helpLabel = (TextView)findViewById(R.id.helpLabel);
 
         // Service List
         listView.setHasFixedSize(true);
-        listLayout = new LinearLayoutManager(this);
+        LinearLayoutManager listLayout = new LinearLayoutManager(this);
         listView.setLayoutManager(listLayout);
 
         // Load
         services = PreferencesHelper.read(this);
         listAdapter = new ServiceListAdapter(services);
         listView.setAdapter(listAdapter);
+        helpLabel.setVisibility(services.size() > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void initDeleteItems() {
@@ -78,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 services.remove(listAdapter.serviceAt(position));
                 listAdapter.notifyItemRemoved(position);
+                helpLabel.setVisibility(services.size() > 0 ? View.INVISIBLE : View.VISIBLE);
 
                 // Save
                 PreferencesHelper.write(MainActivity.this, services);
@@ -96,25 +114,57 @@ public class MainActivity extends AppCompatActivity {
                 nameText.setHint(R.string.hint_name);
                 nameText.setSingleLine(true);
                 nameText.setFilters(new InputFilter[] {
-                        new InputFilter.LengthFilter(16)
+                        new InputFilter.LengthFilter(getResources().getInteger(
+                                R.integer.max_service_name_length))
                 });
+
+                // Set up Include checkboxes
+                final CheckBox uppercaseCheckBox = new CheckBox(MainActivity.this);
+                uppercaseCheckBox.setText(R.string.label_uppercase);
+                uppercaseCheckBox.setChecked(true);
+                final CheckBox lowercaseCheckBox = new CheckBox(MainActivity.this);
+                lowercaseCheckBox.setText(R.string.label_lowercase);
+                lowercaseCheckBox.setChecked(true);
+                final CheckBox numberCheckBox = new CheckBox(MainActivity.this);
+                numberCheckBox.setText(R.string.label_numbers);
+                numberCheckBox.setChecked(true);
+                final CheckBox symbolCheckBox = new CheckBox(MainActivity.this);
+                symbolCheckBox.setText(R.string.label_symbols);
+                symbolCheckBox.setChecked(true);
+
+                // Group them together
+                LinearLayout layout = new LinearLayout(MainActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.addView(nameText);
+                layout.addView(uppercaseCheckBox);
+                layout.addView(lowercaseCheckBox);
+                layout.addView(numberCheckBox);
+                layout.addView(symbolCheckBox);
+                nameText.requestFocus();
 
                 // Set up dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder .setTitle(R.string.title_add)
-                        .setView(nameText)
+                        .setView(layout)
                         .setNegativeButton(R.string.button_cancel, null)
                         .setPositiveButton(R.string.button_add, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
                                 // Add service to list
-                                String name = nameText.getText().toString();
-                                if (name.equals("")) return;
+                                byte include = 0b0000;
+                                if (uppercaseCheckBox.isChecked()) include |= 0b0001;
+                                if (lowercaseCheckBox.isChecked()) include |= 0b0010;
+                                if (numberCheckBox.isChecked()) include |= 0b0100;
+                                if (symbolCheckBox.isChecked()) include |= 0b1000;
+                                Log.w("Include", String.valueOf(include));
+                                Service service = new Service(nameText.getText().toString(), include);
+                                if (service.name.equals("")) return;
                                 int oldSize = services.size();
-                                services.add(name);
+                                services.add(service);
                                 if (services.size() > oldSize) {
-                                    int position = listAdapter.positionOf(name);
+                                    int position = listAdapter.positionOf(service);
                                     listAdapter.notifyItemInserted(position);
+                                    helpLabel.setVisibility(services.size() > 0 ? View.INVISIBLE : View.VISIBLE);
                                 }
 
                                 // Save
@@ -137,31 +187,45 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        addButton.setEnabled(s.length() > 0);
+                        addButton.setEnabled(s.length() > 0 && (uppercaseCheckBox.isChecked() ||
+                                                                lowercaseCheckBox.isChecked() ||
+                                                                numberCheckBox.isChecked() ||
+                                                                symbolCheckBox.isChecked()));
                     }
                 });
+                CheckBox.OnCheckedChangeListener checkListener = new CheckBox.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        addButton.setEnabled(nameText.length() > 0 && (uppercaseCheckBox.isChecked() ||
+                                                                lowercaseCheckBox.isChecked() ||
+                                                                numberCheckBox.isChecked() ||
+                                                                symbolCheckBox.isChecked()));
+                    }
+                };
+                uppercaseCheckBox.setOnCheckedChangeListener(checkListener);
+                lowercaseCheckBox.setOnCheckedChangeListener(checkListener);
+                numberCheckBox.setOnCheckedChangeListener(checkListener);
+                symbolCheckBox.setOnCheckedChangeListener(checkListener);
             }
         });
     }
 
     private void initNotification() {
-        // TODO
-        /* RemoteViews rv = new RemoteViews(getPackageName());
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pintent = PendingIntent.getActivity(this, 42, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_seedpass_icon_flat);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder .setContentTitle("Generate Password")
-                .setSmallIcon(R.drawable.ic_notification_icon)
+        builder .setContentTitle(getString(R.string.notification))
+                .setContentIntent(pintent)
+                .setSmallIcon(R.drawable.ic_seedpass_icon_mono)
+                .setLargeIcon(icon)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setShowWhen(false)
                 .setOngoing(true);
 
-        // Add services
-        for (String name : services) {
-            builder.addAction(R.drawable.ic_key, name, null);
-        }
-
         Notification notification = builder.build();
-
         NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(42, notification);
-        */
     }
 }

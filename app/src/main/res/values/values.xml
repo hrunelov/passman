@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="max_account_name_length">16</integer>
+    <integer name="max_service_name_length">16</integer>
+    <integer name="password_expiration_time">20</integer>
 </resources>

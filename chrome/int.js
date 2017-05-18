@@ -37,14 +37,25 @@ function int(number, size) {
 		for (var i = 0; i < number.length; ++i) {
 			if (typeof(number[i]) != "boolean") throw "First argument must be a number or boolean array";
 		}
-		this.size = number.length;
-		this.bits = number;
+		if (size == undefined) {
+			this.size = number.length;
+			this.bits = number;
+		} else {
+			this.size = size;
+			if (size > number.length) {
+				this.bits = number;
+				for (var i = number.length; i < size; ++i) {
+					this.bits[i] = false;
+				}
+			} else this.bits = number.slice(0, size);
+		}
 	}
 }
 
 /**
  * Shifts bits to the left.
  * n: Number of positions to shift
+ * return: this << n
  */
 int.prototype.left = function(n) {
 	var result = new Array();
@@ -58,7 +69,7 @@ int.prototype.left = function(n) {
 /**
  * Shifts bits to the right.
  * n: Number of positions to shift
- * return: Result
+ * return: this >> n
  */
 int.prototype.right = function(n) {
 	var result = new Array();
@@ -74,7 +85,7 @@ int.prototype.right = function(n) {
 /**
  * Shifts bits to the right, unsigned.
  * n: Number of positions to shift
- * return: Result
+ * return: this >>> n
  */
 int.prototype.uright = function(n) {
 	var result = new Array();
@@ -90,7 +101,7 @@ int.prototype.uright = function(n) {
 /**
  * Addition.
  * x: Number or integer to add
- * return: Result
+ * return: this + x
  */
 int.prototype.add = function(x) {
 	if (typeof(x) == "number") x = new int(x, this.size);
@@ -104,23 +115,23 @@ int.prototype.add = function(x) {
 		result[i] = (s%2?true:false);
 		carry = (s > 1);
 	}
-	return new int(result);
+	return new int(result, this.size);
 }
 
 /**
  * Subtraction.
  * x: Number or integer to subtract
- * return: Result
+ * return: this - x
  */
 int.prototype.subtract = function(x) {
-	if (typeof(x) != "number") x = x.toNumber();
-	return this.add(x*-1);
+	if (typeof(x) == "number") x = new int(x, this.size);
+	return this.add(x.not().add(1)).copy(this.size);
 }
 
 /**
  * Multiplication.
  * x: Number or integer to multiply
- * return: Result
+ * return: this * x
  */
 int.prototype.multiply = function(x) {
 	if (typeof(x) == "number") x = new int(x, this.size);
@@ -131,13 +142,13 @@ int.prototype.multiply = function(x) {
 		result = result.add(x.left(y.lowestOneBitIndex()));
 		y.bits[y.lowestOneBitIndex()] = false;
 	}
-	return result;
+	return result.copy(this.size);
 }
 
 /**
  * Bitwise AND.
  * x: Integer to compare
- * return: Result
+ * return: this & x
  */
 int.prototype.and = function(x) {
 	if (typeof(x) == "number") x = new int(x, this.size);
@@ -150,7 +161,7 @@ int.prototype.and = function(x) {
 /**
  * Bitwise OR.
  * x: Integer to compare
- * return: Result
+ * return: this | x
  */
 int.prototype.or = function(x) {
 	if (typeof(x) == "number") x = new int(x, this.size);
@@ -163,7 +174,7 @@ int.prototype.or = function(x) {
 /**
  * Bitwise XOR.
  * x: Integer to compare
- * return: Result
+ * return: this ^ x
  */
 int.prototype.xor = function(x) {
 	if (typeof(x) == "number") x = new int(x, this.size);
@@ -175,12 +186,85 @@ int.prototype.xor = function(x) {
 
 /**
  * Bitwise NOT.
- * return: Result
+ * return: !this
  */
 int.prototype.not = function() {
 	var result = new Array();
 	for (var i = 0; i < this.size; ++i) result[i] = !this.bits[i];
 	return new int(result);
+}
+
+/**
+ * Greater Than comparison.
+ * return: this > x
+ */
+int.prototype.greaterThan = function(x) {
+	if (typeof(x) == "number") x = new int(x, this.size);
+	
+	if (this.bits[this.size-1]) {
+		var y = this.copy();
+		y.bits[y.size-1] = false;
+		return y.lessThan(i);
+	}
+	if (x.bits[x.size-1]) {
+		var y = x.copy();
+		y.bits[y.size-1] = false;
+		return y.greaterThan(this);
+	}
+	for (var i = Math.max(this.size, x.size)-1; i >= 0; --i) {
+		var a = this.bits[i];
+		var b = x.bits[i];
+		if (a == undefined && b) return false;
+		if (b == undefined && a) return true;
+		if (a != b) return a;
+	}
+	return false;
+}
+
+/**
+ * Greater Than Or Equal To comparison.
+ * return: this >= x
+ */
+int.prototype.greaterThanOrEquals = function(x) {
+	if (typeof(x) == "number") x = new int(x, this.size);
+	
+	if (this.bits[this.size-1]) {
+		var y = this.copy();
+		y.bits[y.size-1] = false;
+		return y.lessThanOrEquals(i);
+	}
+	if (x.bits[x.size-1]) {
+		var y = x.copy();
+		y.bits[y.size-1] = false;
+		return y.greaterThanOrEquals(this);
+	}
+	for (var i = Math.max(this.size, x.size)-1; i >= 0; --i) {
+		var a = this.bits[i];
+		var b = x.bits[i];
+		if (a == undefined && b) return false;
+		if (b == undefined && a) return true;
+		if (a != b) return a;
+	}
+	return true;
+}
+
+/**
+ * Less Than comparison.
+ * return: this < x
+ */
+int.prototype.lessThan = function(x) {
+	if (typeof(x) == "number") x = new int(x, this.size);
+	
+	return x.greaterThan(this);
+}
+
+/**
+ * Less Than Or Equal To comparison.
+ * return: this <= x
+ */
+int.prototype.lessThanOrEquals = function(x) {
+	if (typeof(x) == "number") x = new int(x, this.size);
+	return x.greaterThanOrEquals(this);
 }
 
 /**
@@ -232,12 +316,13 @@ int.prototype.highestOneBit = function() {
 int.prototype.toNumber = function(size) {
 	if (size == undefined) size = this.size;
 	
+	if (this.bits[size-1]) return -this.not().toNumber(size)-1;
+	
 	var result = 0;
 	for (var i = 0; i < size; ++i) {
 		var a = this.bits[i];
 		if (a) result += Math.pow(2,i);
 	}
-	if (this.bits[size-1]) result -= Math.pow(2,size);
 	return result;
 }
 
@@ -245,8 +330,10 @@ int.prototype.toNumber = function(size) {
  * Copies the integer.
  * return: Copy of this integer
  */
-int.prototype.copy = function() {
-	return new int(this.toNumber(), this.size);
+int.prototype.copy = function(size) {
+	if (size == undefined) size = this.size;
+	
+	return new int(this.bits, size);
 }
 
 /**

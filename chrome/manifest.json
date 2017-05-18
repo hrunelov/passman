@@ -1,0 +1,43 @@
+{
+	"manifest_version": 2,
+
+	"name": "SeedPass",
+	"description": "Determinstic Password Generator",
+	"version": "1.0",
+
+	"browser_action": {
+		"default_icon": "icon.png",
+		"default_popup": "popup.html"
+	},
+	"permissions": [
+		"activeTab",
+		"contextMenus",
+		"storage",
+		"https://ajax.googleapis.com/"
+	],
+	"icons": {
+	  "16": "icon_small.png",
+	  "48": "icon_medium.png",
+	  "128": "icon_large.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": [
+				"jquery-ui-1.12.1.custom/external/jquery/jquery.js",
+				"jquery-ui-1.12.1.custom/jquery-ui.js",
+				"jquery-ui-1.12.1.custom/jquery-ui.min.js",
+				"int.js",
+				"random.js",
+				"passgen.js",
+				"fill.js"
+			]
+		}
+	],
+	"background": {
+		"scripts": [
+			"services.js",
+			"menu.js"
+		]
+	}
+}

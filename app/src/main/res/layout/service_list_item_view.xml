@@ -1,29 +1,38 @@
 <net.hannesrunelov.seedpass.ServiceListItemView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:passman="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    android:id="@+id/accountListItemView"
+    android:id="@+id/serviceListItemView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:layout_marginLeft="40dp"
-    android:layout_marginRight="40dp"
-    android:layout_marginTop="5dp"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    passman:name="Account"
-    passman:cardBackgroundColor="@color/cardview_light_background"
-    passman:contentPadding="7dp">
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:name="@string/service_default_name">
 
     <TextView
         android:id="@+id/serviceLabel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.62"
 
+        android:paddingTop="5dp"
         android:text="@string/service_default_name"
         android:textAlignment="center"
-        android:textColor="@color/colorTextDark"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/colorTextDark" />
+
+    <TextView
+        android:id="@+id/includeLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.62"
+
+        android:paddingBottom="5dp"
+        android:text="Aa123#$&amp;"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorTextLight" />
 
 </net.hannesrunelov.seedpass.ServiceListItemView>
