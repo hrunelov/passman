@@ -12,6 +12,7 @@ Android:
 2. Start Android Studio. Select "Check out project from Version Control" and then GitHub.
 3. Enter the path to this repository (from "Clone or download"), the parent directory to clone to and the name of the project directory.
 4. Click Clone.
+
 Chrome (Google Chrome browser required):
 1. Download the directory "chrome".
 2. Go to chrome://extensions and check "Developer mode".
