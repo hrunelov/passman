@@ -7,7 +7,11 @@ Each milestone from 1 onwards will have its own branch.<br>
 ### Testing strategy ###
 The project will be heavily tested during development, both with JUnit tests and manually, to make sure no bugs are present and that passwords generated in Java are exactly equal to those generated in JavaScript.<br>
 ### How to install ###
-Android (Android device required): Download release/SeedPass.apk to your device and install it from there.<br>
+Android:
+1. Download and install [Android Studio](https://developer.android.com/studio/index.html)
+2. Start Android Studio. Select "Check out project from Version Control" and then GitHub.
+3. Enter the path to this repository (from "Clone or download"), the parent directory to clone to and the name of the project directory.
+4. Click Clone.
 Chrome (Google Chrome browser required):
 1. Download the directory "chrome".
 2. Go to chrome://extensions and check "Developer mode".
