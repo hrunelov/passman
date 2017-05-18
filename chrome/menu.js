@@ -9,9 +9,18 @@ function refreshMenu() {
 	chrome.contextMenus.removeAll();
 	
 	loadServices(function(services) {
+		if (services.length > 0) {
+			chrome.contextMenus.create({
+				title: "Generate Password", 
+				id: "generate",
+				contexts: ["editable"]
+			});
+		}
+		
 		for (var i = 0; i < services.length; ++i) {
 			chrome.contextMenus.create({
-				title: services[i][0], 
+				parentId: "generate",
+				title: services[i][0],
 				id: i.toString(),
 				contexts: ["editable"], 
 				onclick: showGenerator
