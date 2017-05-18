@@ -1,39 +1,51 @@
 .list
 {
-	width: 200px;
+	width: 240px;
 }
 
 .serviceButton
 {
-	width: 148px;
+	background-color: #EEEEEE;
+	border: none;
+	width: 188px;
 	height: 28px;
+	padding-left: 30px;
 	float: left;
 }
 
 .removeButton
 {
+	background-color: #EEEEEE;
+	border: none;
 	padding: 0 0 0 0;
 	width: 28px;
 	height: 28px;
 	float: right;
 	font-size: 16pt;
 	font-weight: bold;
-	color: red;
+	color: #FF0000;
 }
 
 #addButton
 {
+	background-color: #00A651;
+	border: none;
 	padding: 0 0 0 0;
 	width: 100%;
 	height: 28px;
 	font-size: 16pt;
 	font-weight: bold;
-	color: green;
+	color: #FFFFFF;
 }
 
 #serviceTemplate
 {
 	display: none;
+}
+
+#info
+{
+	text-align: center;
 }
 
 p
@@ -44,4 +56,10 @@ p
 div
 {
 	margin: 10px 10px 10px 10px;
+}
+span
+{
+	width: 14px;
+	display: inline-block;
+}
 }
