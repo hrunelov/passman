@@ -18,6 +18,10 @@ function refresh() {
 		var listDiv = document.getElementById("serviceList");
 		var template = document.getElementById("serviceTemplate");
 		listDiv.innerHTML = "";
+		
+		var info = document.getElementById("info");
+		info.style.display = (services.length == 0 ? "block":"none");
+		
 		for (var i = 0; i < services.length; ++i) {
 			(function () {
 				var service = services[i];
@@ -25,6 +29,7 @@ function refresh() {
 				var include = service[1];
 				
 				var servDiv = template.cloneNode(true);
+				servDiv.removeAttribute("id");
 				
 				var button = servDiv.getElementsByClassName("serviceButton")[0];
 				button.value = name;
