@@ -22,7 +22,7 @@ var SYMBOLS   = 0b1000;
  * include (types of characters to include)
  * return: The resulting password
  */
-function getPassword(key, length, include) {
+function getPassword(key, include, length) {
 	if (length == undefined) length = 20;
 	if (include == undefined || key == 0b0000) include = 0b1111;
 
